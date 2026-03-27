@@ -3,6 +3,7 @@
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
+import { updateUserStats, checkAchievements } from "@/lib/stats"
 
 interface SaveSessionInput {
   lessonId: string
@@ -116,6 +117,14 @@ export async function saveSession(input: SaveSessionInput) {
       where: { id: lesson.trackId },
       data: { status: "COMPLETED" },
     })
+  }
+
+  // Update user stats and check achievements
+  try {
+    await updateUserStats(session.user.id, input.duration)
+    await checkAchievements(session.user.id)
+  } catch (e) {
+    console.error("Error updating stats:", e)
   }
 
   redirect(`/lesson/${input.lessonId}/summary?session=${voiceSession.id}`)

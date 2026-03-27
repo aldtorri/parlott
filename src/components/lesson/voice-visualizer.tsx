@@ -1,6 +1,7 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { motion, useAnimation } from "framer-motion"
+import { useEffect } from "react"
 import type { SessionStatus } from "@/hooks/use-voice-session"
 
 interface VoiceVisualizerProps {
@@ -9,110 +10,114 @@ interface VoiceVisualizerProps {
   isUserSpeaking?: boolean
 }
 
+const ORB_STATES = {
+  idle: {
+    gradient: "radial-gradient(circle, #E2E8F0 0%, #94A3B8 60%, #64748B 100%)",
+    scale: [0.97, 1.03, 0.97],
+    glowOpacity: 0.15,
+    duration: 3,
+  },
+  connecting: {
+    gradient: "radial-gradient(circle, #D1D5DB 0%, #9CA3AF 60%, #6B7280 100%)",
+    scale: [0.95, 1.05, 0.95],
+    glowOpacity: 0.2,
+    duration: 1.5,
+  },
+  aiSpeaking: {
+    gradient: "radial-gradient(circle, #374151 0%, #1F2937 60%, #111827 100%)",
+    scale: [0.95, 1.12, 0.95],
+    glowOpacity: 0.3,
+    duration: 1.2,
+  },
+  userSpeaking: {
+    gradient: "radial-gradient(circle, #99F6E4 0%, #14B8A6 60%, #0F766E 100%)",
+    scale: [0.96, 1.08, 0.96],
+    glowOpacity: 0.35,
+    duration: 0.8,
+  },
+  listening: {
+    gradient: "radial-gradient(circle, #D1D5DB 0%, #6B7280 60%, #374151 100%)",
+    scale: [0.98, 1.04, 0.98],
+    glowOpacity: 0.2,
+    duration: 2,
+  },
+  ended: {
+    gradient: "radial-gradient(circle, #E5E7EB 0%, #D1D5DB 60%, #9CA3AF 100%)",
+    scale: [1, 1, 1],
+    glowOpacity: 0.1,
+    duration: 3,
+  },
+}
+
+function getOrbState(status: SessionStatus, isAiSpeaking: boolean, isUserSpeaking?: boolean) {
+  if (status === "idle" || status === "error") return ORB_STATES.idle
+  if (status === "connecting") return ORB_STATES.connecting
+  if (status === "ended") return ORB_STATES.ended
+  if (isAiSpeaking) return ORB_STATES.aiSpeaking
+  if (isUserSpeaking) return ORB_STATES.userSpeaking
+  return ORB_STATES.listening
+}
+
 export function VoiceVisualizer({ status, isAiSpeaking, isUserSpeaking }: VoiceVisualizerProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const animationRef = useRef<number>(0)
-  const timeRef = useRef(0)
+  const orbState = getOrbState(status, isAiSpeaking, isUserSpeaking)
+  const controls = useAnimation()
 
   useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext("2d")
-    if (!ctx) return
-
-    const size = canvas.width
-
-    function draw() {
-      if (!ctx) return
-      timeRef.current += 0.05
-
-      ctx.clearRect(0, 0, size, size)
-
-      const cx = size / 2
-      const cy = size / 2
-
-      // Determine state color and animation
-      let baseRadius = 80
-      let pulseAmount = 0
-      let color1 = "rgba(99, 102, 241, 0.6)"   // indigo (AI)
-      let color2 = "rgba(99, 102, 241, 0.2)"
-
-      if (status === "idle" || status === "connecting") {
-        // Gentle breathing
-        baseRadius = 70
-        pulseAmount = Math.sin(timeRef.current * 0.8) * 5
-        color1 = "rgba(163, 163, 163, 0.5)"
-        color2 = "rgba(163, 163, 163, 0.15)"
-      } else if (isAiSpeaking) {
-        // AI speaking: dark pulsing
-        pulseAmount = Math.sin(timeRef.current * 3) * 20 + Math.sin(timeRef.current * 7) * 8
-        color1 = "rgba(23, 23, 23, 0.8)"
-        color2 = "rgba(23, 23, 23, 0.2)"
-      } else if (isUserSpeaking) {
-        // User speaking: blue/teal pulsing
-        pulseAmount = Math.sin(timeRef.current * 4) * 18 + Math.sin(timeRef.current * 9) * 6
-        color1 = "rgba(20, 184, 166, 0.8)"
-        color2 = "rgba(20, 184, 166, 0.2)"
-      } else if (status === "active") {
-        // Listening: slow pulse
-        pulseAmount = Math.sin(timeRef.current * 1.5) * 8
-        color1 = "rgba(64, 64, 64, 0.6)"
-        color2 = "rgba(64, 64, 64, 0.15)"
-      }
-
-      const radius = baseRadius + pulseAmount
-
-      // Outer glow
-      const outerGradient = ctx.createRadialGradient(cx, cy, radius * 0.6, cx, cy, radius * 1.4)
-      outerGradient.addColorStop(0, color2)
-      outerGradient.addColorStop(1, "transparent")
-      ctx.beginPath()
-      ctx.arc(cx, cy, radius * 1.4, 0, Math.PI * 2)
-      ctx.fillStyle = outerGradient
-      ctx.fill()
-
-      // Inner orb
-      const innerGradient = ctx.createRadialGradient(cx - radius * 0.2, cy - radius * 0.2, 0, cx, cy, radius)
-      innerGradient.addColorStop(0, color1.replace("0.6", "0.9").replace("0.7", "0.95").replace("0.5", "0.8").replace("0.4", "0.6"))
-      innerGradient.addColorStop(0.5, color1)
-      innerGradient.addColorStop(1, color2)
-      ctx.beginPath()
-      ctx.arc(cx, cy, radius, 0, Math.PI * 2)
-      ctx.fillStyle = innerGradient
-      ctx.fill()
-
-      // Connecting dots ring (only when active)
-      if (status === "active" || status === "connecting") {
-        const numDots = 8
-        const dotRadius = 3
-        const ringRadius = radius + 30 + Math.sin(timeRef.current * 2) * 4
-
-        for (let i = 0; i < numDots; i++) {
-          const angle = (i / numDots) * Math.PI * 2 + timeRef.current * 0.5
-          const x = cx + Math.cos(angle) * ringRadius
-          const y = cy + Math.sin(angle) * ringRadius
-          const opacity = 0.3 + Math.sin(timeRef.current * 2 + i * 0.8) * 0.3
-
-          ctx.beginPath()
-          ctx.arc(x, y, dotRadius, 0, Math.PI * 2)
-          ctx.fillStyle = color1.replace(/[\d.]+\)$/, `${opacity})`)
-          ctx.fill()
-        }
-      }
-
-      animationRef.current = requestAnimationFrame(draw)
-    }
-
-    draw()
-    return () => cancelAnimationFrame(animationRef.current)
-  }, [status, isAiSpeaking, isUserSpeaking])
+    controls.start({
+      scale: orbState.scale,
+      transition: {
+        duration: orbState.duration,
+        repeat: Infinity,
+        ease: "easeInOut" as const,
+      },
+    })
+  }, [status, isAiSpeaking, isUserSpeaking, controls, orbState.scale, orbState.duration])
 
   return (
-    <canvas
-      ref={canvasRef}
-      width={280}
-      height={280}
-      className="mx-auto"
-    />
+    <div className="relative w-[200px] h-[200px] flex items-center justify-center mx-auto">
+      {/* Outer glow */}
+      <motion.div
+        className="absolute inset-0 rounded-full"
+        style={{
+          background: orbState.gradient,
+          filter: "blur(40px)",
+          opacity: orbState.glowOpacity,
+        }}
+        animate={{
+          scale: orbState.scale,
+          opacity: orbState.glowOpacity,
+        }}
+        transition={{
+          scale: { duration: orbState.duration, repeat: Infinity, ease: "easeInOut" as const },
+          opacity: { duration: 0.5 },
+        }}
+      />
+
+      {/* Main orb */}
+      <motion.div
+        className="w-[140px] h-[140px] rounded-full shadow-lg"
+        style={{ background: orbState.gradient }}
+        animate={controls}
+      />
+
+      {/* Inner highlight */}
+      <motion.div
+        className="absolute w-[60px] h-[60px] rounded-full"
+        style={{
+          background: "radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%)",
+          top: "35%",
+          left: "35%",
+        }}
+        animate={{
+          scale: orbState.scale,
+          opacity: [0.5, 0.8, 0.5],
+        }}
+        transition={{
+          duration: orbState.duration,
+          repeat: Infinity,
+          ease: "easeInOut" as const,
+        }}
+      />
+    </div>
   )
 }

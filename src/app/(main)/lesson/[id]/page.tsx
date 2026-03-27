@@ -17,20 +17,20 @@ export default async function LessonPage({ params }: PageProps) {
     where: { id },
     include: {
       track: {
-        include: { objective: true },
+        include: {
+          objective: true,
+          lessons: {
+            where: { status: "COMPLETED" },
+            select: { id: true },
+          },
+        },
       },
     },
   })
 
   if (!lesson) notFound()
-
-  // Check the lesson belongs to this user
   if (lesson.track.userId !== session.user.id) notFound()
-
-  // Only allow available or in-progress lessons
-  if (lesson.status === "LOCKED") {
-    redirect("/dashboard")
-  }
+  if (lesson.status === "LOCKED") redirect("/dashboard")
 
   return (
     <VoiceSessionView
@@ -42,6 +42,11 @@ export default async function LessonPage({ params }: PageProps) {
         order: lesson.order,
         level: lesson.track.level,
         objectiveName: lesson.track.objective.name,
+        language: lesson.track.objective.language,
+        keyTopics: lesson.keyTopics,
+        warmupQuestion: lesson.warmupQuestion,
+        promptHints: lesson.promptHints,
+        lessonsCompleted: lesson.track.lessons.length,
       }}
     />
   )

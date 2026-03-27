@@ -20,11 +20,14 @@ model User {
 
   currentLevel     CEFRLevel?
   currentObjective String?
+  dailyGoal        Int        @default(10)
 
-  accounts      Account[]
-  sessions      Session[]
-  tracks        Track[]
-  voiceSessions VoiceSession[]
+  accounts         Account[]
+  sessions         Session[]
+  tracks           Track[]
+  voiceSessions    VoiceSession[]
+  stats            UserStats?
+  userAchievements UserAchievement[]
 }
 
 model Account {
@@ -64,12 +67,20 @@ model VerificationToken {
 
 // ---- App models ----
 
+enum Language {
+  ENGLISH
+  SPANISH
+  PORTUGUESE
+  FRENCH
+}
+
 enum CEFRLevel {
   A1
   A2
   B1
   B2
   C1
+  C2
 }
 
 enum TrackStatus {
@@ -86,12 +97,15 @@ enum LessonStatus {
 }
 
 model Objective {
-  id          String  @id @default(cuid())
-  slug        String  @unique
+  id          String   @id @default(cuid())
+  slug        String
   name        String
   description String
   icon        String
+  language    Language @default(ENGLISH)
   tracks      Track[]
+
+  @@unique([slug, language])
 }
 
 model Track {
@@ -111,14 +125,17 @@ model Track {
 }
 
 model Lesson {
-  id          String       @id @default(cuid())
-  trackId     String
-  title       String
-  topic       String
-  description String
-  order       Int
-  status      LessonStatus @default(LOCKED)
-  completedAt DateTime?
+  id             String       @id @default(cuid())
+  trackId        String
+  title          String
+  topic          String
+  description    String
+  order          Int
+  status         LessonStatus @default(LOCKED)
+  completedAt    DateTime?
+  keyTopics      String[]
+  warmupQuestion String?
+  promptHints    String?
 
   track         Track          @relation(fields: [trackId], references: [id], onDelete: Cascade)
   voiceSessions VoiceSession[]
@@ -141,4 +158,40 @@ model VoiceSession {
 
   lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ---- Stats & Achievements ----
+
+model UserStats {
+  id               String    @id @default(cuid())
+  userId           String    @unique
+  currentStreak    Int       @default(0)
+  longestStreak    Int       @default(0)
+  totalMinutes     Int       @default(0)
+  lastSessionDate  DateTime?
+  lessonsCompleted Int       @default(0)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Achievement {
+  id               String            @id @default(cuid())
+  slug             String            @unique
+  name             String
+  description      String
+  icon             String
+  condition        String
+  userAchievements UserAchievement[]
+}
+
+model UserAchievement {
+  id            String      @id @default(cuid())
+  userId        String
+  achievementId String
+  unlockedAt    DateTime    @default(now())
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievement Achievement @relation(fields: [achievementId], references: [id])
+
+  @@unique([userId, achievementId])
 }

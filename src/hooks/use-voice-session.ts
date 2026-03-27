@@ -20,6 +20,11 @@ interface LessonContext {
   description: string
   level: string
   objectiveName: string
+  language?: string
+  keyTopics?: string[]
+  warmupQuestion?: string | null
+  promptHints?: string | null
+  lessonsCompleted?: number
 }
 
 export function useVoiceSession(lesson: LessonContext) {
@@ -115,7 +120,18 @@ export function useVoiceSession(lesson: LessonContext) {
       })
 
       // Connect with system prompt
-      const systemPrompt = buildTutorPrompt(lesson)
+      const systemPrompt = buildTutorPrompt({
+        language: lesson.language ?? "ENGLISH",
+        level: lesson.level,
+        lessonTitle: lesson.topic,
+        topic: lesson.topic,
+        description: lesson.description,
+        objectiveName: lesson.objectiveName,
+        keyTopics: lesson.keyTopics ?? [],
+        warmupQuestion: lesson.warmupQuestion ?? null,
+        promptHints: lesson.promptHints,
+        lessonsCompleted: lesson.lessonsCompleted,
+      })
       geminiClient.current.connect(apiKey, { systemPrompt })
 
     } catch (err) {

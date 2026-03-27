@@ -11,11 +11,18 @@ const badgeVariants = cva(
         secondary: "border-transparent bg-secondary text-secondary-foreground",
         destructive: "border-transparent bg-destructive text-destructive-foreground",
         outline: "text-foreground",
-        A1: "border-transparent bg-slate-500 text-white",
-        A2: "border-transparent bg-blue-500 text-white",
-        B1: "border-transparent bg-teal-500 text-white",
-        B2: "border-transparent bg-violet-500 text-white",
-        C1: "border-transparent bg-amber-500 text-white",
+        // CEFR levels
+        A1: "border-transparent bg-blue-100 text-blue-700",
+        A2: "border-transparent bg-green-100 text-green-700",
+        B1: "border-transparent bg-yellow-100 text-yellow-800",
+        B2: "border-transparent bg-red-100 text-red-700",
+        C1: "border-transparent bg-purple-100 text-purple-700",
+        C2: "border-transparent bg-neutral-200 text-neutral-800",
+        // Languages
+        english: "border-transparent bg-blue-100 text-blue-700",
+        spanish: "border-transparent bg-red-100 text-red-700",
+        portuguese: "border-transparent bg-green-100 text-green-700",
+        french: "border-transparent bg-purple-100 text-purple-700",
       },
     },
     defaultVariants: {

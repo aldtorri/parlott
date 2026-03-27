@@ -36,21 +36,21 @@ export function ObjectiveSelector({ objectives, selected, onSelect }: ObjectiveS
             key={obj.slug}
             onClick={() => onSelect(obj.slug)}
             className={cn(
-              "flex items-start gap-4 p-5 rounded-2xl border text-left transition-all",
+              "flex items-start gap-4 p-4 rounded-2xl border text-left transition-all",
               isSelected
-                ? "border-primary bg-primary/10 ring-2 ring-primary/30"
-                : "border-border bg-card hover:border-primary/50 hover:bg-card/80"
+                ? "border-foreground bg-surface ring-2 ring-foreground/20"
+                : "border-border bg-card hover:border-border-strong"
             )}
           >
             <div className={cn(
               "w-10 h-10 rounded-xl flex items-center justify-center shrink-0",
-              isSelected ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+              isSelected ? "bg-foreground text-background" : "bg-surface-elevated text-text-secondary"
             )}>
               <Icon className="w-5 h-5" />
             </div>
             <div className="space-y-0.5">
-              <p className="font-semibold text-foreground text-sm">{obj.name}</p>
-              <p className="text-xs text-muted-foreground leading-relaxed">{obj.description}</p>
+              <p className="text-title-sm text-foreground">{obj.name}</p>
+              <p className="text-body-sm text-text-secondary">{obj.description}</p>
             </div>
           </button>
         )

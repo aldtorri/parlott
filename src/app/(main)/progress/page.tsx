@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
+import { PageHeader } from "@/components/ui/page-header"
+import { EmptyState } from "@/components/ui/empty-state"
 import { Trophy, BookOpen } from "lucide-react"
 import type { CEFRLevel } from "@/generated/prisma/enums"
 
@@ -44,26 +46,23 @@ export default async function ProgressPage() {
   const completedTracks = user.tracks.filter((t) => t.status === "COMPLETED")
 
   return (
-    <div className="max-w-lg mx-auto px-4 py-6 space-y-6">
-      {/* Header */}
-      <div className="space-y-1">
-        <h1 className="text-xl font-bold text-foreground">Tu progreso</h1>
-        <p className="text-sm text-muted-foreground">
-          Aquí está tu avance en Amelia
-        </p>
-      </div>
+    <div className="max-w-lg mx-auto px-5 py-6 pb-24">
+      <PageHeader
+        title="Tu progreso"
+        subtitle="Tu avance en Amelia"
+      />
 
       {/* Level badge */}
       {user.currentLevel && (
-        <div className="rounded-2xl border border-border bg-card p-5 flex items-center gap-4 shadow-sm">
-          <div className="w-14 h-14 rounded-2xl bg-muted flex items-center justify-center">
-            <span className="text-xl font-bold text-foreground">
+        <div className="rounded-2xl border border-border bg-card p-4 flex items-center gap-4 shadow-sm mt-8">
+          <div className="w-14 h-14 rounded-2xl bg-surface-elevated flex items-center justify-center">
+            <span className="text-xl font-bold text-foreground tabular-nums">
               {user.currentLevel}
             </span>
           </div>
           <div>
-            <p className="text-xs text-muted-foreground">Tu nivel actual</p>
-            <p className="font-bold text-foreground text-lg">
+            <p className="text-label text-text-secondary">Tu nivel actual</p>
+            <p className="text-title-sm text-foreground mt-0.5">
               CEFR {user.currentLevel}
             </p>
             <Badge
@@ -77,18 +76,18 @@ export default async function ProgressPage() {
       )}
 
       {/* Stats */}
-      <div className="grid grid-cols-2 gap-3">
-        <div className="rounded-2xl border border-border bg-card p-4 space-y-1 shadow-sm">
-          <p className="text-2xl font-bold text-foreground">
+      <div className="grid grid-cols-2 gap-3 mt-8">
+        <div className="rounded-2xl border border-border bg-card p-4 shadow-sm">
+          <p className="text-2xl font-bold text-foreground tabular-nums">
             {formatTime(totalSeconds)}
           </p>
-          <p className="text-xs text-muted-foreground">
-            Tiempo total de práctica
+          <p className="text-label text-text-secondary mt-1">
+            Tiempo de práctica
           </p>
         </div>
-        <div className="rounded-2xl border border-border bg-card p-4 space-y-1 shadow-sm">
-          <p className="text-2xl font-bold text-foreground">{totalSessions}</p>
-          <p className="text-xs text-muted-foreground">
+        <div className="rounded-2xl border border-border bg-card p-4 shadow-sm">
+          <p className="text-2xl font-bold text-foreground tabular-nums">{totalSessions}</p>
+          <p className="text-label text-text-secondary mt-1">
             Sesiones completadas
           </p>
         </div>
@@ -96,17 +95,17 @@ export default async function ProgressPage() {
 
       {/* Active track */}
       {activeTrack && (
-        <div className="space-y-3">
-          <h2 className="font-semibold text-foreground text-sm px-1">
+        <div className="mt-8">
+          <h2 className="text-title-sm text-foreground px-1 mb-3">
             Track activo
           </h2>
-          <div className="rounded-2xl border border-border bg-card p-5 space-y-3 shadow-sm">
+          <div className="rounded-2xl border border-border bg-card p-4 space-y-3 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-semibold text-foreground text-sm">
+                <p className="text-title-sm text-foreground">
                   {activeTrack.objective.name}
                 </p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-body-sm text-text-secondary">
                   Nivel {activeTrack.level}
                 </p>
               </div>
@@ -122,11 +121,11 @@ export default async function ProgressPage() {
               const pct = total > 0 ? (completed / total) * 100 : 0
               return (
                 <div className="space-y-2">
-                  <div className="flex justify-between text-xs text-muted-foreground">
+                  <div className="flex justify-between text-label text-text-secondary">
                     <span>
                       {completed} de {total} lecciones
                     </span>
-                    <span>{Math.round(pct)}%</span>
+                    <span className="tabular-nums">{Math.round(pct)}%</span>
                   </div>
                   <Progress value={pct} />
                 </div>
@@ -138,24 +137,24 @@ export default async function ProgressPage() {
 
       {/* Completed tracks */}
       {completedTracks.length > 0 && (
-        <div className="space-y-3">
-          <div className="flex items-center gap-2 px-1">
-            <Trophy className="w-4 h-4 text-muted-foreground" />
-            <h2 className="font-semibold text-foreground text-sm">
+        <div className="mt-8">
+          <div className="flex items-center gap-2 px-1 mb-3">
+            <Trophy className="w-4 h-4 text-text-secondary" />
+            <h2 className="text-title-sm text-foreground">
               Tracks completados
             </h2>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-3">
             {completedTracks.map((track) => (
               <div
                 key={track.id}
                 className="flex items-center justify-between p-4 rounded-2xl border border-border bg-card shadow-sm"
               >
                 <div>
-                  <p className="font-medium text-foreground text-sm">
+                  <p className="text-title-sm text-foreground">
                     {track.objective.name}
                   </p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-body-sm text-text-secondary">
                     {track.lessons.length} lecciones
                   </p>
                 </div>
@@ -169,11 +168,14 @@ export default async function ProgressPage() {
       )}
 
       {!activeTrack && completedTracks.length === 0 && (
-        <div className="text-center py-12">
-          <BookOpen className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-          <p className="text-muted-foreground text-sm">
-            Aún no tienes lecciones completadas.
-          </p>
+        <div className="mt-8">
+          <EmptyState
+            icon={BookOpen}
+            title="Sin lecciones aún"
+            description="Tu primera lección te está esperando. Solo toma 10 minutos."
+            actionLabel="Comenzar"
+            actionHref="/onboarding"
+          />
         </div>
       )}
     </div>

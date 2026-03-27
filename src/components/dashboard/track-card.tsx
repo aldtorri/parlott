@@ -23,15 +23,15 @@ export function TrackCard({
   const Icon = ICON_MAP[objectiveIcon as keyof typeof ICON_MAP] ?? BookOpen
 
   return (
-    <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
+    <div className="rounded-2xl border border-border bg-card p-4 shadow-sm">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
-            <Icon className="w-6 h-6 text-primary" />
+          <div className="w-12 h-12 rounded-2xl bg-surface-elevated flex items-center justify-center">
+            <Icon className="w-6 h-6 text-foreground" />
           </div>
           <div>
-            <p className="font-semibold text-foreground">{objectiveName}</p>
-            <Badge variant={level as CEFRLevel} className="mt-1 text-xs">
+            <p className="text-title-sm text-foreground">{objectiveName}</p>
+            <Badge variant={level as CEFRLevel} className="mt-1">
               Nivel {level}
             </Badge>
           </div>
@@ -41,13 +41,13 @@ export function TrackCard({
 
       {/* Progress bar */}
       <div className="mt-4 space-y-1.5">
-        <div className="flex justify-between text-xs text-muted-foreground">
+        <div className="flex justify-between text-label text-text-secondary">
           <span>Progreso del track</span>
-          <span>{completedLessons} de {totalLessons} lecciones</span>
+          <span className="tabular-nums">{completedLessons} de {totalLessons} lecciones</span>
         </div>
-        <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+        <div className="h-1.5 rounded-full bg-surface-elevated overflow-hidden">
           <div
-            className="h-full rounded-full bg-primary transition-all duration-500"
+            className="h-full rounded-full bg-foreground transition-all duration-500"
             style={{ width: `${totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0}%` }}
           />
         </div>

@@ -3,6 +3,7 @@ import { redirect } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
+import { PageHeader } from "@/components/ui/page-header"
 import type { CEFRLevel } from "@/generated/prisma/enums"
 import Link from "next/link"
 import { LogOut, RefreshCcw } from "lucide-react"
@@ -12,35 +13,34 @@ export default async function SettingsPage() {
   if (!session?.user?.id) redirect("/")
 
   return (
-    <div className="max-w-lg mx-auto px-4 py-6 space-y-6">
-      {/* Header */}
-      <div className="space-y-1">
-        <h1 className="text-xl font-bold text-foreground">Ajustes</h1>
-        <p className="text-sm text-muted-foreground">Tu perfil y preferencias</p>
-      </div>
+    <div className="max-w-lg mx-auto px-5 py-6 pb-24">
+      <PageHeader
+        title="Ajustes"
+        subtitle="Tu perfil y preferencias"
+      />
 
       {/* Profile */}
-      <div className="rounded-2xl border border-border bg-card p-5 space-y-4 shadow-sm">
-        <h2 className="font-semibold text-foreground text-sm">Perfil</h2>
+      <div className="rounded-2xl border border-border bg-card p-4 space-y-4 shadow-sm mt-8">
+        <h2 className="text-title-sm text-foreground">Perfil</h2>
 
         <div className="space-y-1">
-          <p className="text-xs text-muted-foreground">Nombre</p>
-          <p className="text-sm font-medium text-foreground">
+          <p className="text-label text-text-secondary">Nombre</p>
+          <p className="text-body text-foreground font-medium">
             {session.user.name ?? "Sin nombre"}
           </p>
         </div>
         <Separator />
         <div className="space-y-1">
-          <p className="text-xs text-muted-foreground">Correo electrónico</p>
-          <p className="text-sm font-medium text-foreground">
+          <p className="text-label text-text-secondary">Correo electrónico</p>
+          <p className="text-body text-foreground font-medium">
             {session.user.email}
           </p>
         </div>
       </div>
 
       {/* Learning config */}
-      <div className="rounded-2xl border border-border bg-card p-5 space-y-4 shadow-sm">
-        <h2 className="font-semibold text-foreground text-sm">
+      <div className="rounded-2xl border border-border bg-card p-4 space-y-4 shadow-sm mt-8">
+        <h2 className="text-title-sm text-foreground">
           Configuración de aprendizaje
         </h2>
 
@@ -48,8 +48,8 @@ export default async function SettingsPage() {
           <>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-muted-foreground">Nivel actual</p>
-                <p className="text-sm font-medium text-foreground">
+                <p className="text-label text-text-secondary">Nivel actual</p>
+                <p className="text-body text-foreground font-medium">
                   CEFR {session.user.currentLevel}
                 </p>
               </div>
@@ -63,8 +63,8 @@ export default async function SettingsPage() {
 
         {session.user.currentObjective && (
           <div>
-            <p className="text-xs text-muted-foreground">Objetivo actual</p>
-            <p className="text-sm font-medium text-foreground capitalize">
+            <p className="text-label text-text-secondary">Objetivo actual</p>
+            <p className="text-body text-foreground font-medium capitalize">
               {session.user.currentObjective}
             </p>
           </div>
@@ -80,6 +80,7 @@ export default async function SettingsPage() {
 
       {/* Sign out */}
       <form
+        className="mt-8"
         action={async () => {
           "use server"
           await signOut({ redirectTo: "/" })

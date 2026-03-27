@@ -17,6 +17,11 @@ interface LessonData {
   order: number
   level: string
   objectiveName: string
+  language?: string
+  keyTopics?: string[]
+  warmupQuestion?: string | null
+  promptHints?: string | null
+  lessonsCompleted?: number
 }
 
 function formatTime(seconds: number): string {
@@ -45,6 +50,11 @@ export function VoiceSessionView({ lesson }: { lesson: LessonData }) {
     description: lesson.description,
     level: lesson.level,
     objectiveName: lesson.objectiveName,
+    language: lesson.language,
+    keyTopics: lesson.keyTopics,
+    warmupQuestion: lesson.warmupQuestion,
+    promptHints: lesson.promptHints,
+    lessonsCompleted: lesson.lessonsCompleted,
   })
 
   const handleEnd = useCallback(async () => {
@@ -76,16 +86,16 @@ export function VoiceSessionView({ lesson }: { lesson: LessonData }) {
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between px-4 pt-12 pb-4">
-        <Link href="/dashboard" className="p-2 rounded-xl hover:bg-muted transition-colors">
+        <Link href="/dashboard" className="p-2 rounded-xl hover:bg-surface transition-colors">
           <ChevronLeft className="w-5 h-5" />
         </Link>
         <div className="text-center">
-          <p className="text-xs text-muted-foreground">Lección {lesson.order}</p>
+          <p className="text-xs text-text-secondary">Lección {lesson.order}</p>
           <p className="font-semibold text-foreground text-sm">{lesson.title}</p>
         </div>
         <div className="w-9 text-center">
           {status === "active" && (
-            <span className="text-sm font-mono text-muted-foreground">{formatTime(elapsedSeconds)}</span>
+            <span className="text-sm font-mono text-text-secondary">{formatTime(elapsedSeconds)}</span>
           )}
         </div>
       </div>
@@ -99,9 +109,9 @@ export function VoiceSessionView({ lesson }: { lesson: LessonData }) {
 
         {/* Status label */}
         <div className="text-center space-y-1 min-h-12">
-          <p className="text-sm text-muted-foreground">{statusLabel}</p>
+          <p className="text-sm text-text-secondary">{statusLabel}</p>
           {status === "active" && transcripts.length > 0 && (
-            <p className="text-xs text-muted-foreground/60 max-w-xs mx-auto line-clamp-2">
+            <p className="text-xs text-text-secondary/60 max-w-xs mx-auto line-clamp-2">
               {transcripts[transcripts.length - 1].text}
             </p>
           )}
@@ -113,7 +123,7 @@ export function VoiceSessionView({ lesson }: { lesson: LessonData }) {
         {isSaving ? (
           <div className="text-center py-6">
             <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-2" />
-            <p className="text-sm text-muted-foreground">Guardando tu sesión...</p>
+            <p className="text-sm text-text-secondary">Guardando tu sesión...</p>
           </div>
         ) : (
           <VoiceControls

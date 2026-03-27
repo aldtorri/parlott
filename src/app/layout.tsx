@@ -1,20 +1,15 @@
 import type { Metadata, Viewport } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
+import { Inter } from "next/font/google"
 import "./globals.css"
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-})
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 })
 
 export const metadata: Metadata = {
-  title: "Amelia - Tutor de inglés con IA",
-  description: "Aprende inglés hablando con un tutor de IA personalizado según tu objetivo y nivel",
+  title: "Amelia - Tutor de idiomas con IA",
+  description: "Aprende idiomas hablando con un tutor de IA personalizado según tu objetivo y nivel",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -38,7 +33,7 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         {children}
