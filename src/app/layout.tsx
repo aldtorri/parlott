@@ -13,17 +13,17 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "Parlott - Tutor de inglés con IA",
+  title: "Amelia - Tutor de inglés con IA",
   description: "Aprende inglés hablando con un tutor de IA personalizado según tu objetivo y nivel",
   appleWebApp: {
     capable: true,
-    statusBarStyle: "black-translucent",
-    title: "Parlott",
+    statusBarStyle: "default",
+    title: "Amelia",
   },
 }
 
 export const viewport: Viewport = {
-  themeColor: "#0a0f1e",
+  themeColor: "#ffffff",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -38,7 +38,7 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${geistSans.variable} ${geistMono.variable} dark h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         {children}

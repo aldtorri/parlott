@@ -2,13 +2,13 @@ import type { MetadataRoute } from "next"
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Parlott - Tutor de inglés con IA",
-    short_name: "Parlott",
+    name: "Amelia - Tutor de inglés con IA",
+    short_name: "Amelia",
     description: "Aprende inglés hablando con un tutor de IA personalizado",
     start_url: "/dashboard",
     display: "standalone",
-    background_color: "#0a0f1e",
-    theme_color: "#0a0f1e",
+    background_color: "#ffffff",
+    theme_color: "#ffffff",
     orientation: "portrait",
     icons: [
       {

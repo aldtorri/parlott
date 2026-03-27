@@ -16,7 +16,7 @@ export default auth((req) => {
 
   // Protected routes
   if (!isLoggedIn) {
-    const signInUrl = new URL("/auth/signin", req.url)
+    const signInUrl = new URL("/", req.url)
     signInUrl.searchParams.set("callbackUrl", pathname)
     return NextResponse.redirect(signInUrl)
   }

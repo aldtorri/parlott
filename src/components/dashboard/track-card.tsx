@@ -23,7 +23,7 @@ export function TrackCard({
   const Icon = ICON_MAP[objectiveIcon as keyof typeof ICON_MAP] ?? BookOpen
 
   return (
-    <div className="rounded-2xl border border-border bg-card p-5">
+    <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">

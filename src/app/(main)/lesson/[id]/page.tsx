@@ -9,7 +9,7 @@ interface PageProps {
 
 export default async function LessonPage({ params }: PageProps) {
   const session = await auth()
-  if (!session?.user?.id) redirect("/auth/signin")
+  if (!session?.user?.id) redirect("/")
 
   const { id } = await params
 

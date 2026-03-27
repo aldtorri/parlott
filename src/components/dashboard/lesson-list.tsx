@@ -13,8 +13,8 @@ interface Lesson {
 const statusConfig = {
   LOCKED: { icon: Lock, label: "Bloqueada", color: "text-muted-foreground/40" },
   AVAILABLE: { icon: Circle, label: "Disponible", color: "text-primary" },
-  IN_PROGRESS: { icon: Play, label: "En progreso", color: "text-amber-400" },
-  COMPLETED: { icon: CheckCircle2, label: "Completada", color: "text-emerald-400" },
+  IN_PROGRESS: { icon: Play, label: "En progreso", color: "text-amber-600" },
+  COMPLETED: { icon: CheckCircle2, label: "Completada", color: "text-emerald-600" },
 }
 
 export function LessonList({ lessons }: { lessons: Lesson[] }) {

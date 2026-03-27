@@ -7,7 +7,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
   providers: [
     Resend({
-      from: process.env.EMAIL_FROM ?? "Parlott <noreply@parlott.app>",
+      from: process.env.EMAIL_FROM ?? "Amelia <onboarding@resend.dev>",
     }),
   ],
   session: {
@@ -39,7 +39,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
   pages: {
-    signIn: "/auth/signin",
+    signIn: "/",
     verifyRequest: "/auth/verify",
   },
 })

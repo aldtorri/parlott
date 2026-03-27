@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { redirect, notFound } from "next/navigation"
 import Link from "next/link"
-import { CheckCircle2, Clock, ArrowRight, Home } from "lucide-react"
+import { CheckCircle2, Clock, ArrowRight, Home, Trophy } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 interface PageProps {
@@ -19,7 +19,7 @@ function formatDuration(seconds: number): string {
 
 export default async function SummaryPage({ params, searchParams }: PageProps) {
   const session = await auth()
-  if (!session?.user?.id) redirect("/auth/signin")
+  if (!session?.user?.id) redirect("/")
 
   const { id } = await params
   const { session: sessionId } = await searchParams
@@ -39,7 +39,6 @@ export default async function SummaryPage({ params, searchParams }: PageProps) {
   if (!lesson) notFound()
   if (lesson.track.userId !== session.user.id) notFound()
 
-  // Get the voice session (latest for this lesson if no specific sessionId)
   const voiceSession = sessionId
     ? await prisma.voiceSession.findUnique({ where: { id: sessionId } })
     : await prisma.voiceSession.findFirst({
@@ -47,9 +46,8 @@ export default async function SummaryPage({ params, searchParams }: PageProps) {
         orderBy: { startedAt: "desc" },
       })
 
-  // Find next lesson
   const lessons = lesson.track.lessons
-  const currentIndex = lessons.findIndex(l => l.id === id)
+  const currentIndex = lessons.findIndex((l) => l.id === id)
   const nextLesson = lessons[currentIndex + 1]
   const isTrackComplete = !nextLesson
 
@@ -58,11 +56,13 @@ export default async function SummaryPage({ params, searchParams }: PageProps) {
       <div className="max-w-lg mx-auto px-4 py-10 space-y-8">
         {/* Success header */}
         <div className="text-center space-y-3">
-          <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mx-auto">
-            <CheckCircle2 className="w-8 h-8 text-emerald-400" />
+          <div className="w-16 h-16 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center mx-auto">
+            <CheckCircle2 className="w-8 h-8 text-emerald-600" />
           </div>
           <h1 className="text-2xl font-bold text-foreground">
-            {isTrackComplete ? "¡Track completado! 🎉" : "¡Lección completada!"}
+            {isTrackComplete
+              ? "Track completado"
+              : "Lección completada"}
           </h1>
           <p className="text-muted-foreground text-sm">{lesson.title}</p>
         </div>
@@ -81,26 +81,38 @@ export default async function SummaryPage({ params, searchParams }: PageProps) {
 
         {/* Summary */}
         {voiceSession?.summary && (
-          <div className="rounded-2xl border border-border bg-card p-5 space-y-2">
-            <h2 className="font-semibold text-foreground text-sm">Resumen de la sesión</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">{voiceSession.summary}</p>
+          <div className="rounded-2xl border border-border bg-card p-5 space-y-2 shadow-sm">
+            <h2 className="font-semibold text-foreground text-sm">
+              Resumen de la sesión
+            </h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {voiceSession.summary}
+            </p>
           </div>
         )}
 
         {/* Feedback */}
         {voiceSession?.feedback && (
-          <div className="rounded-2xl border border-border bg-card p-5 space-y-2">
-            <h2 className="font-semibold text-foreground text-sm">Retroalimentación</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">{voiceSession.feedback}</p>
+          <div className="rounded-2xl border border-border bg-card p-5 space-y-2 shadow-sm">
+            <h2 className="font-semibold text-foreground text-sm">
+              Retroalimentación
+            </h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {voiceSession.feedback}
+            </p>
           </div>
         )}
 
         {/* Track complete message */}
         {isTrackComplete && (
-          <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-5 text-center space-y-2">
-            <p className="text-2xl">🏆</p>
-            <p className="font-semibold text-foreground">¡Completaste el track de {lesson.track.objective.name}!</p>
-            <p className="text-sm text-muted-foreground">Considera avanzar al siguiente nivel o explorar otro objetivo.</p>
+          <div className="rounded-2xl border border-border bg-muted/50 p-5 text-center space-y-2 shadow-sm">
+            <Trophy className="w-8 h-8 text-foreground mx-auto" />
+            <p className="font-semibold text-foreground">
+              Completaste el track de {lesson.track.objective.name}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Considera avanzar al siguiente nivel o explorar otro objetivo.
+            </p>
           </div>
         )}
 

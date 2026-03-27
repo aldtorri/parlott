@@ -41,23 +41,23 @@ export function VoiceVisualizer({ status, isAiSpeaking, isUserSpeaking }: VoiceV
         // Gentle breathing
         baseRadius = 70
         pulseAmount = Math.sin(timeRef.current * 0.8) * 5
-        color1 = "rgba(100, 116, 139, 0.4)"
-        color2 = "rgba(100, 116, 139, 0.1)"
+        color1 = "rgba(163, 163, 163, 0.5)"
+        color2 = "rgba(163, 163, 163, 0.15)"
       } else if (isAiSpeaking) {
-        // AI speaking: violet pulsing
+        // AI speaking: dark pulsing
         pulseAmount = Math.sin(timeRef.current * 3) * 20 + Math.sin(timeRef.current * 7) * 8
-        color1 = "rgba(139, 92, 246, 0.7)"
-        color2 = "rgba(139, 92, 246, 0.15)"
+        color1 = "rgba(23, 23, 23, 0.8)"
+        color2 = "rgba(23, 23, 23, 0.2)"
       } else if (isUserSpeaking) {
         // User speaking: blue/teal pulsing
         pulseAmount = Math.sin(timeRef.current * 4) * 18 + Math.sin(timeRef.current * 9) * 6
-        color1 = "rgba(20, 184, 166, 0.7)"
-        color2 = "rgba(20, 184, 166, 0.15)"
+        color1 = "rgba(20, 184, 166, 0.8)"
+        color2 = "rgba(20, 184, 166, 0.2)"
       } else if (status === "active") {
         // Listening: slow pulse
         pulseAmount = Math.sin(timeRef.current * 1.5) * 8
-        color1 = "rgba(99, 102, 241, 0.5)"
-        color2 = "rgba(99, 102, 241, 0.1)"
+        color1 = "rgba(64, 64, 64, 0.6)"
+        color2 = "rgba(64, 64, 64, 0.15)"
       }
 
       const radius = baseRadius + pulseAmount

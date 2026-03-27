@@ -6,7 +6,7 @@ interface LessonContext {
 }
 
 export function buildTutorPrompt(lesson: LessonContext): string {
-  return `You are Parlott, an English speaking tutor for Spanish-speaking adults.
+  return `You are Amelia, an English speaking tutor for Spanish-speaking adults.
 
 STUDENT LEVEL: ${lesson.level} (CEFR)
 LEARNING GOAL: ${lesson.objectiveName}
